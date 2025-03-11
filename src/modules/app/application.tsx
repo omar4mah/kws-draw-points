@@ -6,6 +6,7 @@ import { useGeographic } from "ol/proj";
 
 // Styling of OpenLayers components like zoom and pan controls
 import "ol/ol.css";
+import { Draw } from "ol/interaction";
 
 // By calling the "useGeographic" function in OpenLayers, we tell that we want coordinates to be in degrees
 //  instead of meters, which is the default. Without this `center: [10.6, 59.9]` brings us to "null island"
@@ -21,6 +22,23 @@ const map = new Map({
   layers: [new TileLayer({ source: new OSM() })],
 });
 
+interface DrawPointButtonProps {
+  map: Map;
+}
+
+function DrawPointButton({ map }: DrawPointButtonProps) {
+  function handleClick() {
+    map.addInteraction(
+      new Draw({
+        type: "Point",
+      }),
+    );
+    alert("Clicked");
+  }
+
+  return <button onClick={handleClick}>Add point</button>;
+}
+
 // A functional React component
 export function Application() {
   // `useRef` bridges the gap between JavaScript functions that expect DOM objects and React components
@@ -32,5 +50,10 @@ export function Application() {
   }, []);
 
   // This is the location (in React) where we want the map to be displayed
-  return <div ref={mapRef}></div>;
+  return (
+    <>
+      <DrawPointButton map={map} />
+      <div ref={mapRef}></div>
+    </>
+  );
 }
